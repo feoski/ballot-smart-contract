@@ -3,15 +3,6 @@ pragma solidity ^0.8.25;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-error Ballot__ElectionAlreadyStarted();
-error Ballot__ElectionAlreadyEnded();
-error Ballot__ElectionNotStartedYet();
-error Ballot__CandidateAlreadyExists();
-error Ballot__NotEnoughCandidates();
-error Ballot__NoCandidatesAvailable();
-error Ballot__AlreadyVoted();
-error Ballot__WinnerAlreadyDeclared();
-
 /**
  * @title A decentralized voting system
  * @author 0xfeoski (Santhosh K)
@@ -19,6 +10,15 @@ error Ballot__WinnerAlreadyDeclared();
  * @dev This implements Openzeppelin's access control (Ownable)
  */
 contract Ballot is Ownable {
+    error Ballot__ElectionAlreadyStarted();
+    error Ballot__ElectionAlreadyEnded();
+    error Ballot__ElectionNotStartedYet();
+    error Ballot__CandidateAlreadyExists();
+    error Ballot__NotEnoughCandidates();
+    error Ballot__NoCandidatesAvailable();
+    error Ballot__AlreadyVoted();
+    error Ballot__WinnerAlreadyDeclared();
+
     struct Candidate {
         string name;
         string party;
@@ -57,7 +57,6 @@ contract Ballot is Ownable {
         if (s_candidateExists[generateCandidateId(candidateName, candidateParty)] == true) {
             revert Ballot__CandidateAlreadyExists();
         }
-
         _;
     }
 
@@ -151,7 +150,7 @@ contract Ballot is Ownable {
         emit ElectionEnded(block.timestamp);
     }
 
-    function getAllCandidates() public view returns (Candidate[] memory) {
+    function getAllCandidates() external view returns (Candidate[] memory) {
         if (s_listOfCandidateIds.length == 0) {
             revert Ballot__NoCandidatesAvailable();
         }
